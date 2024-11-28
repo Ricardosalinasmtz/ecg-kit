@@ -261,7 +261,10 @@ classdef ECGwrapper < handle
             obj.partition_mode = p.Results.partition_mode;
             obj.cacheResults = p.Results.cacheResults;
             obj.syncSlavesWithMaster = p.Results.syncSlavesWithMaster;
-            
+            if (strcmp(obj.ECGtaskHandle.name, 'Null task'))
+                obj.cacheResults = false;
+            end
+
             % Dont know why this variable uses a lot of bytes to store at disk.
             clear p
             
@@ -359,6 +362,7 @@ classdef ECGwrapper < handle
                     obj.ECGtaskHandle.tmp_path = obj.tmp_path;
                     obj.ECGtaskHandle.Start( obj.ECG_header, obj.ECG_annotations );
                     
+                    if (~strcmp(obj.ECGtaskHandle.name, 'Null task'))
                     if( obj.ECGtaskHandle.started )
                         
                         %% 
@@ -702,7 +706,7 @@ classdef ECGwrapper < handle
                                         ECG = int16(ECG);
 
                                     else
-                                        [ECG this_header] = ADC2units(double(ECG), this_header, obj.ECGtaskHandle.target_units);
+                                        [ECG, this_header] = ADC2units(double(ECG), this_header, obj.ECGtaskHandle.target_units);
                                     end
 
                                 end
@@ -1137,6 +1141,7 @@ classdef ECGwrapper < handle
                     else
                         cprintf('[1,0.5,0]', 'Requirements not satisfied in %s for task %s.\n', obj.recording_name, obj.ECGtaskHandle.name);
                     end
+                    end
                     
                 catch MException
                     %% Error handling
@@ -1201,7 +1206,7 @@ classdef ECGwrapper < handle
             
             if( isempty(result_files) )
                 
-                if( obj.ECGtaskHandle.started )
+                if( obj.ECGtaskHandle.started && ~strcmp(obj.ECGtaskHandle.name, 'Null task'))
                     if( obj.cant_pids == 1 || obj.this_pid == obj.cant_pids )
                         obj.Error = true;
                         obj.ErrorReport = [obj.ErrorReport {sprintf('No payload generated for recording %s\n', obj.recording_name )}];
@@ -1790,7 +1795,7 @@ classdef ECGwrapper < handle
             else
                 
                 % ECG to be read
-                [obj.rec_path, obj.rec_filename, caca] = fileparts(obj.recording_name);
+                [obj.rec_path, obj.rec_filename, ~] = fileparts(obj.recording_name);
                 
                 if( isempty(obj.rec_path) )
                     obj.rec_path = ['.' filesep];
