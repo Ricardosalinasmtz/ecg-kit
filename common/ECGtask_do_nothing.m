@@ -41,20 +41,19 @@ classdef ECGtask_do_nothing < ECGtask
             
         end
         
-        function Start(obj, ECG_header)
+        function Start(obj, ECG_header, ECG_annotations)
             % not implemented
-
+            obj.started = true;
         end
         
-        function payload = Process(obj, ECG, ECG_sample_start_end_idx, ECG_header, ECG_annotations, ECG_annotations_start_end_idx )
-            
+        function payload = Process(obj, ECG, ECG_start_offset, ECG_sample_start_end_idx, ECG_header, ECG_annotations, ECG_annotations_start_end_idx )            
             % not implemented
             payload = [];
             
         end
         
         
-        function Finish(obj)
+        function Finish(obj, payload, ECG_header)
             % not implemented
 
         end
