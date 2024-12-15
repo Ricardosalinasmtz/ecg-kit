@@ -395,7 +395,7 @@ classdef progress_bar < handle
             if( obj.bUIpresent )
                 if( ishandle(obj.wb_handle) ) 
                     % waitbar close
-%                     delete(obj.wb_handle)
+                    delete(obj.wb_handle)
                 end
             else
 
